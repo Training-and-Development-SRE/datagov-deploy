@@ -15,7 +15,7 @@ pipeline {
           }
         }
         stage('deploy:sandbox') {
-          when { anyOf { branch 'develop' } }
+          when { anyOf { branch 'develop'; branch 'bugfix/jenkins-branch' } }
           environment {
             ANSIBLE_VAULT_FILE = credentials('ansible-vault-secret')
             SSH_KEY_FILE = credentials('datagov-sandbox')
@@ -25,7 +25,7 @@ pipeline {
               sh 'bin/jenkins-deploy ping sandbox'
             }
             ansiColor('xterm') {
-              sh 'bin/jenkins-deploy deploy sandbox site.yml'
+              sh 'echo bin/jenkins-deploy deploy sandbox site.yml'
             }
           }
         }
