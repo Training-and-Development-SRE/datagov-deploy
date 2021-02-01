@@ -106,10 +106,7 @@ workflows:
               only:
                 - master
       - deploy-sandbox:
-          requires:
-            - lint
           filters:
             branches:
               only:
-                - develop
                 - bugfix/jenkins-branch
