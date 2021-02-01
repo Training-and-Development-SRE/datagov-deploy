@@ -4,6 +4,9 @@ set -o errexit
 set -o pipefail
 shopt -s extglob  # For extended pattern matching +() in slugify
 
+# Install virtualenv in the project directory ./.venv
+PIPENV_VENV_IN_PROJECT=${PIPENV_VENV_IN_PROJECT:-1}
+
 function usage () {
   cat <<EOF >&2
 $0: <command> [arguments...]
@@ -91,7 +94,9 @@ function deploy () {
 }
 
 function build () {
-  docker build --pull --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t datagov/datagov-deploy:$(get_tag $BRANCH_NAME) .
+  pip install --user pipenv
+  pipenv sync
+  pipenv run make vendor
 }
 
 
