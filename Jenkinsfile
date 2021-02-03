@@ -8,7 +8,7 @@ pipeline {
           steps {
             ansiColor('xterm') {
               sh 'bin/jenkins-deploy build'
-              zip zipFile: 'datagov-deploy.zip', artifact: true
+              zip zipFile: 'datagov-deploy.zip', archive: true
             }
           }
         }
@@ -36,7 +36,7 @@ pipeline {
           steps {
             ansiColor('xterm') {
               sh 'bin/jenkins-deploy build'
-              zip zipFile: 'datagov-deploy.zip', artifact: true
+              zip zipFile: 'datagov-deploy.zip', archive: true
             }
           }
         }
