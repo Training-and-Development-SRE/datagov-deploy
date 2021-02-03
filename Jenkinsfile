@@ -8,7 +8,7 @@ pipeline {
           steps {
             ansiColor('xterm') {
               sh 'bin/jenkins-deploy build'
-              archiveArtifacts artifacts: '**/*', onlyIfSuccessful: true
+              zip artifact: true
             }
           }
         }
@@ -36,7 +36,7 @@ pipeline {
           steps {
             ansiColor('xterm') {
               sh 'bin/jenkins-deploy build'
-              archiveArtifacts artifacts: '**/*', onlyIfSuccessful: true
+              zip artifact: true
             }
           }
         }
