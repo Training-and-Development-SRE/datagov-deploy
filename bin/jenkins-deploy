@@ -14,10 +14,7 @@ $0: <command> [arguments...]
 Commands:
 
   build
-    Build the datagov-deploy artifact (wraps docker build).
-
-  run [arguments...]
-    Runs the build artifact for deploy (wraps docker run).
+    Build the datagov-deploy artifact (prepares Ansible playbooks).
 
   ping <environment>
     Runs ansible ping to test connectivity.
@@ -37,27 +34,6 @@ Required environment variables:
 EOF
 }
 
-# Slugify the given text. Replaces most symbols with "-", except for
-# alphanumeric characters, underscore, and dash.
-function slugify () {
-  local text
-  text="$1"
-  echo -n "${text//+([^A-z0-9_-])/-}"
-}
-
-# Returns a docker tag based on the branch name
-function get_tag () {
-  local branch
-  branch="$1"
-  if [[ "$branch" = "master" || "$branch" = "main" ]]; then
-    # Use "latest" tag for master/main branches.
-    echo -n latest
-    return 0
-  fi
-
-  slugify "$branch"
-}
-
 function check_required_env_vars () {
   if [[ -z "$ANSIBLE_VAULT_FILE" ]]; then
     echo "ANSIBLE_VAULT_FILE environment variable must be set." >&2
@@ -72,15 +48,11 @@ function check_required_env_vars () {
   fi
 }
 
-function run () {
-  check_required_env_vars
-  exec docker run --rm -v $SSH_KEY_FILE:$SSH_KEY_FILE -v $ANSIBLE_VAULT_FILE:$ANSIBLE_VAULT_FILE -u $(id -u) datagov/datagov-deploy:$(get_tag $BRANCH_NAME) "$@"
-}
-
 function ping () {
   local environment
   environment="$1"
-  run pipenv run ansible --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" -m ping all
+  check_required_env_vars
+  pipenv run ansible --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" -m ping all
 }
 
 function deploy () {
@@ -90,7 +62,8 @@ function deploy () {
   playbook="$1"
   shift
 
-  run pipenv run ansible-playbook --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" "$playbook" "$@"
+  check_required_env_vars
+  pipenv run ansible-playbook --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" "$playbook" "$@"
 }
 
 function build () {
@@ -106,8 +79,6 @@ if [[ "$#" -eq 0 ]]; then
   exit 1
 fi
 
-BRANCH_NAME=${branch_name:-master}
-
 command=$1
 shift
 case "$command" in
@@ -119,9 +90,6 @@ case "$command" in
     ;;
   ping)
     ping "$@"
-    ;;
-  run)
-    run "$@"
     ;;
   *)
     echo "Unknown command." >&2

@@ -3,9 +3,6 @@ pipeline {
   stages {
     stage('workflow:sandbox') {
       when { anyOf { environment name: 'DATAGOV_WORKFLOW', value: 'sandbox' } }
-      environment {
-        BRANCH_NAME = "${branch_name}"
-      }
       stages {
         stage('build') {
           steps {
@@ -34,9 +31,6 @@ pipeline {
     }
     stage('workflow:production') {
       when { anyOf { environment name: 'DATAGOV_WORKFLOW', value: 'production' } }
-      environment {
-        BRANCH_NAME = "${branch_name}"
-      }
       stages {
         stage('build') {
           steps {
