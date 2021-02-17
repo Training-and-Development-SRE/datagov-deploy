@@ -13,7 +13,7 @@ pipeline {
           }
         }
         stage('deploy:sandbox') {
-          when { anyOf { branch 'develop'; branch 'bugfix/jenkins-branch' } }
+          when { anyOf { branch 'develop'; branch 'feature/jenkins-artifact' } }
           environment {
             ANSIBLE_VAULT_FILE = credentials('ansible-vault-secret')
             SSH_KEY_FILE = credentials('datagov-sandbox')
