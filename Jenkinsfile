@@ -50,7 +50,7 @@ pipeline {
           }
           environment {
             ANSIBLE_VAULT_FILE = credentials('ansible-vault-secret')
-            SSH_KEY_FILE = credentials('ssh-staging')
+            SSH_KEY_FILE = credentials('datagov-stage-ssh')
           }
           steps {
             ansiColor('xterm') {
@@ -69,7 +69,7 @@ pipeline {
           }
           environment {
             ANSIBLE_VAULT_FILE = credentials('ansible-vault-secret')
-            SSH_KEY_FILE = credentials('ssh-mgmt')
+            SSH_KEY_FILE = credentials('datagov-mgmt-ssh')
           }
           steps {
             ansiColor('xterm') {
@@ -88,7 +88,7 @@ pipeline {
           }
           environment {
             ANSIBLE_VAULT_FILE = credentials('ansible-vault-secret')
-            SSH_KEY_FILE = credentials('ssh-production')
+            SSH_KEY_FILE = credentials('datagov-prod-ssh')
           }
           steps {
             ansiColor('xterm') {
