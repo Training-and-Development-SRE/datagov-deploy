@@ -45,6 +45,7 @@ pipeline {
             anyOf {
               branch 'release/*'
               branch 'master'
+              branch 'feature/jenkins-artifact'
             }
           }
           environment {
