@@ -52,6 +52,7 @@ function ping () {
   local environment
   environment="$1"
   check_required_env_vars
+  cd ansible
   pipenv run ansible --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" -m ping all
 }
 
@@ -63,6 +64,7 @@ function deploy () {
   shift
 
   check_required_env_vars
+  cd ansible
   pipenv run ansible-playbook --key-file=$SSH_KEY_FILE --vault-password-file=$ANSIBLE_VAULT_FILE --inventory "inventories/$environment" "$playbook" "$@"
 }
 
